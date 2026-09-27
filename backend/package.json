@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "seed": "prisma db seed"
   },
   "keywords": [],
   "author": "",
@@ -27,5 +28,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }
