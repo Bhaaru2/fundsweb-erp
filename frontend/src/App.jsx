@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Nav from './components/Nav';
 import Login from './pages/Login';
 import Enquiries from './pages/Enquiries';
+import Quotations from './pages/Quotations';
 import './App.css';
 
 function AppRoutes() {
@@ -17,6 +18,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Enquiries />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quotations"
+          element={
+            <ProtectedRoute>
+              <Quotations />
             </ProtectedRoute>
           }
         />

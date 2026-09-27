@@ -13,6 +13,7 @@ export default function Nav() {
       <div className="nav-brand">FundsWeb ERP</div>
       <div className="nav-links">
         <Link to="/enquiries">Enquiries</Link>
+        <Link to="/quotations">Quotations</Link>
       </div>
       <div className="nav-user">
         <span>

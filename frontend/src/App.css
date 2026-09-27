@@ -112,7 +112,7 @@ button.secondary {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-width: 520px;
+  max-width: 640px;
   padding: 20px;
   margin-bottom: 24px;
   border: 1px solid var(--border);
@@ -159,6 +159,15 @@ button.secondary {
   padding: 8px 12px;
   border-bottom: 1px solid var(--border);
   font-size: 14px;
+}
+
+.quotation-item-row input {
+  width: 80px;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
 }
 
 .badge {
