@@ -7,6 +7,7 @@ const customersRoutes = require('./routes/customers.routes');
 const productsRoutes = require('./routes/products.routes');
 const enquiriesRoutes = require('./routes/enquiries.routes');
 const quotationsRoutes = require('./routes/quotations.routes');
+const salesOrdersRoutes = require('./routes/salesOrders.routes');
 
 // The app is built here but not started, so tests can import it with supertest.
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/customers', customersRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/enquiries', enquiriesRoutes);
 app.use('/api/quotations', quotationsRoutes);
+app.use('/api/sales-orders', salesOrdersRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

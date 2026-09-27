@@ -39,6 +39,13 @@ const quotationInclude = {
   },
 };
 
+const salesOrderInclude = {
+  quotation: { include: { enquiry: { include: { customer: true } } } },
+  items: {
+    include: { product: { select: { code: true, name: true, unit: true } } },
+  },
+};
+
 router.use(authenticate);
 
 router.get('/', async (req, res, next) => {
@@ -158,6 +165,74 @@ router.patch('/:id/status', authorize('SALES'), async (req, res, next) => {
 
     res.json(updated);
   } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/:id/convert', authorize('SALES'), async (req, res, next) => {
+  try {
+    const quotationId = Number(req.params.id);
+
+    const quotation = await prisma.quotation.findUnique({
+      where: { id: quotationId },
+      include: { items: true, enquiry: true },
+    });
+    if (!quotation) {
+      return next(new AppError(404, 'Quotation not found'));
+    }
+    if (quotation.status !== 'ACCEPTED') {
+      return next(
+        new AppError(400, `Only an ACCEPTED quotation can be converted (current status: ${quotation.status})`)
+      );
+    }
+    if (quotation.enquiry.status !== 'QUOTED') {
+      return next(
+        new AppError(
+          400,
+          `Enquiry must be QUOTED to convert this quotation (current status: ${quotation.enquiry.status})`
+        )
+      );
+    }
+
+    const existingOrder = await prisma.salesOrder.findUnique({ where: { quotationId } });
+    if (existingOrder) {
+      return next(new AppError(409, 'A Sales Order already exists for this quotation'));
+    }
+
+    const salesOrder = await prisma.$transaction(async (tx) => {
+      const [{ next: nextId }] = await tx.$queryRaw`SELECT nextval('sales_orders_id_seq') AS next`;
+      const id = Number(nextId);
+      const orderNumber = `SO-${String(id).padStart(5, '0')}`;
+
+      await tx.enquiry.update({ where: { id: quotation.enquiryId }, data: { status: 'WON' } });
+
+      const created = await tx.salesOrder.create({
+        data: {
+          id,
+          orderNumber,
+          quotationId,
+          totalAmount: quotation.grandTotal,
+          createdById: req.user.id,
+          items: {
+            create: quotation.items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              lineAmount: item.lineAmount,
+            })),
+          },
+        },
+        include: salesOrderInclude,
+      });
+
+      return created;
+    });
+
+    res.status(201).json(salesOrder);
+  } catch (err) {
+    if (err.code === 'P2002') {
+      return next(new AppError(409, 'A Sales Order already exists for this quotation'));
+    }
     next(err);
   }
 });
