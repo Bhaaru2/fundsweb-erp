@@ -5,6 +5,7 @@ import Nav from './components/Nav';
 import Login from './pages/Login';
 import Enquiries from './pages/Enquiries';
 import Quotations from './pages/Quotations';
+import SalesOrders from './pages/SalesOrders';
 import './App.css';
 
 function AppRoutes() {
@@ -26,6 +27,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Quotations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sales-orders"
+          element={
+            <ProtectedRoute>
+              <SalesOrders />
             </ProtectedRoute>
           }
         />

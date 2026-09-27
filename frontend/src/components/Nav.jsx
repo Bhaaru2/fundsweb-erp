@@ -14,6 +14,7 @@ export default function Nav() {
       <div className="nav-links">
         <Link to="/enquiries">Enquiries</Link>
         <Link to="/quotations">Quotations</Link>
+        <Link to="/sales-orders">Sales Orders</Link>
       </div>
       <div className="nav-user">
         <span>
